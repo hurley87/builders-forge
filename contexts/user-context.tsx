@@ -12,7 +12,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useMiniApp } from "./miniapp-context";
+import { useFarcaster } from "./farcaster-context";
 
 const UserProviderContext = createContext<
   | {
@@ -22,6 +22,7 @@ const UserProviderContext = createContext<
         isLoading: boolean;
         error: Error | null;
       };
+      isSignedIn: boolean;
       signIn: () => Promise<void>;
       isLoading: boolean;
       error: Error | null;
@@ -46,7 +47,7 @@ export const UserProvider = ({
   children,
   autoSignIn = false,
 }: UserProviderProps) => {
-  const { context } = useMiniApp();
+  const { context } = useFarcaster();
   const [error, setError] = useState<Error | null>(null);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,7 +63,7 @@ export const UserProvider = ({
     refetchOnWindowFocus: false,
     isProtected: true,
     retry: false,
-    enabled: true,
+    enabled: autoSignIn,
     ...{
       onSuccess: () => {
         setIsSignedIn(true);
@@ -132,6 +133,7 @@ export const UserProvider = ({
         error: userError,
       },
       signIn: handleSignIn,
+      isSignedIn,
       isLoading,
       error,
     };
@@ -140,6 +142,7 @@ export const UserProvider = ({
     isFetchingUser,
     userError,
     handleSignIn,
+    isSignedIn,
     isLoading,
     error,
     refetchUser,

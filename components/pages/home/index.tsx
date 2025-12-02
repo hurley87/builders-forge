@@ -1,13 +1,32 @@
 "use client";
 
+import { useEnvironment } from "@/contexts/environment-context";
+import { useFarcaster } from "@/contexts/farcaster-context";
 import { useUser } from "@/contexts/user-context";
+import { env } from "@/lib/env";
 import Image from "next/image";
 import { useAccount } from "wagmi";
+import { Website } from "../website";
 
-export default function Home() {
-  const { user, isLoading, error, signIn } = useUser();
-
+export default function HomePage() {
+  const { user, isLoading, error, signIn, isSignedIn } = useUser();
   const { address } = useAccount();
+  const { isInBrowser } = useEnvironment();
+  const { context } = useFarcaster();
+  const isInFarcasterMobile =
+    !isInBrowser && context?.client?.platformType === "mobile";
+
+  const baseUrl = isInFarcasterMobile
+    ? `cbwallet://miniapp?url=${encodeURIComponent(env.NEXT_PUBLIC_URL)}`
+    : env.NEXT_PUBLIC_URL;
+
+  if (isInBrowser) {
+    return <Website />;
+  }
+
+  if (isSignedIn && !user) {
+    return <div>You are not authorized to view this page</div>;
+  }
 
   return (
     <div className="bg-white text-black flex min-h-screen flex-col items-center justify-center p-4">

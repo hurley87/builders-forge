@@ -6,7 +6,7 @@ export const config = {
   matcher: ["/api/:path*"],
 };
 
-export default async function middleware(req: NextRequest) {
+export default async function proxy(req: NextRequest) {
   // Skip auth check for sign-in endpoint
   if (
     req.nextUrl.pathname === "/api/auth/sign-in" ||

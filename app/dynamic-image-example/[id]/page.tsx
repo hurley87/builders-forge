@@ -1,4 +1,4 @@
-import App from "@/components/Home";
+import HomePage from "@/components/pages/home";
 import { env } from "@/lib/env";
 import { Metadata } from "next";
 
@@ -44,5 +44,5 @@ export async function generateMetadata({
 }
 
 export default async function StreakFlex() {
-  return <App />;
+  return <HomePage />;
 }
