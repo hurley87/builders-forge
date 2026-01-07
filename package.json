@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "frames": "frames"
+    "frames": "frames",
+    "forge:build": "cd contracts && forge build",
+    "forge:test": "cd contracts && forge test",
+    "forge:deploy": "cd contracts && forge script script/Deploy.s.sol --broadcast && npm run sync-abi",
+    "sync-abi": "mkdir -p src/abi && cp contracts/out/Counter.sol/Counter.json src/abi/Counter.json"
   },
   "dependencies": {
     "@farcaster/auth-client": "^0.7.0",
