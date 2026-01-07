@@ -1,171 +1,72 @@
-# Farcaster Mini App Template
+# Builder's Forge
 
-This is a [Next.js](https://nextjs.org) starter kit to bootstrap your Farcaster Mini App
+**The ultimate full-stack starter kit for Farcaster Mini Apps.**
 
-- [Farcaster Mini Apps](https://miniapps.xyz)
-- [Tailwind CSS](https://tailwindcss.com)
-- [Next.js](https://nextjs.org/docs)
-- [Neynar](https://neynar.com)
+This repository combines a production-ready Next.js frontend with a robust Foundry smart contract environment. It is designed to get you from "zero" to "deployed dApp" as fast as possible.
 
-## Getting Started
+## Quick Start
 
-1. Install dependencies:
-
+### 1. Clone and Install
 ```bash
+git clone https://github.com/hurley87/builders-forge.git
+cd builders-forge
+
+# Install Frontend dependencies
 npm install
-# or
-yarn install
-# or
-pnpm install
-# or
-bun install
+
+# Install Smart Contract dependencies
+cd contracts && forge install && cd ..
 ```
 
-2. Verify environment variables:
+### 2. Environment Setup
 
-The environment variables enable the following features:
+You will need environment variables for both the frontend (Next.js) and the contracts (Foundry).
 
-- Frame metadata - Sets up the Frame Embed that will be shown when you cast your frame
-- Account association - Allows users to add your frame to their account, enables notifications
-- Redis API keys - Enable Webhooks and background notifications for your application by storing users notification details
+- **Frontend**: Copy `.env.example` to `.env.local` and add your Farcaster/WalletConnect keys.
+- **Contracts**: Create a `.env` file inside the `contracts/` folder for your RPC URLs and Private Keys (see `contracts/.env.example`).
 
-```bash
-# Required for Frame metadata
-NEXT_PUBLIC_URL=
+### 3. Start Hacking
 
-# Required to allow users to add your frame
-NEXT_PUBLIC_FARCASTER_HEADER=
-NEXT_PUBLIC_FARCASTER_PAYLOAD=
-NEXT_PUBLIC_FARCASTER_SIGNATURE=
-
-# Optional: Set to "production" to disable Eruda debugger
-NEXT_PUBLIC_APP_ENV=development
-
-# Required for user authentication
-NEYNAR_API_KEY=
-JWT_SECRET=
-
-# Required for webhooks and background notifications
-REDIS_URL=
-REDIS_TOKEN=
-```
-
-3. Start the development server:
-
+**Run the Frontend:**
 ```bash
 npm run dev
 ```
+Open http://localhost:3000 to see your Mini App.
 
-4. Run a local tunneling server
-
-- [NGROK](https://ngrok.com)
-- [Local Tunnel](https://theboroer.github.io/localtunnel-www/)
-
-5. Generate your Farcaster Manifest variables
-
-- Follow these [instructions](https://miniapps.farcaster.xyz/docs/guides/publishing)
-- Visit [Manifest Tool](https://warpcast.com/~/developers/mini-apps/manifest)
-- Paste your tunnel domain
-
-## Template Features
-
-### Providers Architecture
-
-The app uses a layered provider architecture in `components/providers/index.tsx`:
-
-- **EnvironmentProvider** - Detects if the app is running in a browser or Farcaster Mini App context
-- **ErudaProvider** - Mobile debugging console (disabled in production via `NEXT_PUBLIC_APP_ENV`)
-- **WagmiProvider** - Wallet connection with Farcaster Mini App connector and Coinbase Wallet support
-- **QueryClientProvider** - React Query for data fetching
-- **FarcasterProvider** - Mini App SDK initialization, context, and safe area insets
-- **UserProvider** - User authentication state with auto sign-in support
-
-### Context Hooks
-
-Three custom context hooks are available:
-
-- `useEnvironment()` - Access `isInBrowser`, `isInFarcasterMiniApp`, and `isLoading` states
-- `useFarcaster()` - Access Mini App context, capabilities, safe area insets, and SDK state
-- `useUser()` - Access user data, sign-in methods, and authentication state
-
-### Authentication System
-
-JWT-based authentication using Farcaster Quick Auth:
-
-- **Sign-in flow** - Uses `@farcaster/quick-auth` to verify user identity
-- **API routes** - `/api/auth/sign-in` for authentication, `/api/auth/check` for session validation
-- **User data** - `/api/users/me` returns authenticated user profile from Neynar
-- **Auto sign-in** - Configurable automatic authentication when Mini App loads
-
-### API Hooks
-
-Custom hooks for API interactions built on React Query:
-
-- `useApiQuery` - For GET requests with caching, protected routes support
-- `useApiMutation` - For POST/PUT/DELETE requests with optimistic updates
-
-### Frame Configuration
-
-- `.well-known/farcaster.json` endpoint configured for Frame metadata and account association
-- Frame metadata automatically added to page headers in `layout.tsx`
-
-### Background Notifications
-
-- Redis-backed notification system using Upstash
-- Ready-to-use notification endpoints in `api/notify` and `api/webhook`
-- Notification client utilities in `lib/notification-client.ts`
-
-### Environment Detection & Website Fallback
-
-When accessed from a regular browser (not in Farcaster/Base), the app displays a landing page with:
-
-- QR code for easy mobile access
-- Direct launch buttons for Farcaster and Base (Coinbase Wallet)
-- App information and branding
-
-### Wallet Integration
-
-Pre-configured Wagmi setup with:
-
-- Farcaster Mini App connector (`@farcaster/miniapp-wagmi-connector`)
-- Coinbase Wallet connector
-- Base and Mainnet chain support
-
-### Dynamic Preview Images
-
-- `dynamic-image-example/[id]/page.tsx` shows how to create a Mini App URL resolving to a custom preview image
-- `api/og/example/[id]/route.tsx` shows how to generate a custom preview image using `next/og`
-- Utility functions in `lib/og-utils.ts` for loading Google Fonts and images
-
-### Development Tools
-
-- **Eruda** - Mobile debugging console, automatically disabled in production
-- **Type-safe environment variables** - Using `@t3-oss/env-nextjs` with Zod validation
-- **Secure headers** - CSP and security headers configured via `next-secure-headers`
-
-## Project Structure
-
-```
-├── app/
-│   ├── api/
-│   │   ├── auth/          # Authentication endpoints
-│   │   ├── notify/        # Push notification endpoints
-│   │   ├── og/            # Dynamic OG image generation
-│   │   ├── users/         # User data endpoints
-│   │   └── webhook/       # Webhook handlers
-│   └── dynamic-image-example/  # Dynamic preview image example
-├── components/
-│   ├── pages/             # Page components (home, website)
-│   ├── providers/         # Context providers
-│   └── shared/            # Reusable UI components
-├── contexts/              # React contexts
-├── hooks/                 # Custom React hooks
-└── lib/                   # Utilities and configurations
+**Run Contracts:**
+```bash
+npm run forge:test
 ```
 
-## Learn More
+## Architecture
 
-- [Farcaster Mini Apps](https://miniapps.xyz)
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [Neynar](https://neynar.com)
+This is a "Monorepo-Lite" setup. Everything lives in one place, but concerns are separated:
+
+- `app/` (Frontend): The Next.js application, powered by the Farcaster Mini App Starter.
+- `contracts/` (Backend): The Smart Contract environment, powered by LazerForge.
+
+### Available Commands
+
+Run these from the root directory:
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Starts the Next.js local development server. |
+| `npm run forge:build` | Compiles your smart contracts. |
+| `npm run forge:test` | Runs Foundry tests for your contracts. |
+| `npm run forge:deploy` | Deploys contracts and syncs ABIs to the frontend. |
+
+**Note**: Check `package.json` to configure the deployment script specific to your chain.
+
+## Tribute & Credits
+
+Builder's Forge stands on the shoulders of giants. It is a remix of two incredible open-source projects:
+
+- **Frontend**: [Farcaster Mini App Starter](https://github.com/builders-garden/miniapp-starter) by Builders Garden.
+- **Smart Contracts**: [LazerForge](https://github.com/lazertechnologies/lazerforge) by Lazer Technologies.
+
+Please support the original creators by starring their repositories!
+
+## License
+
+This project retains the open-source licenses of its parent components. See the LICENSE file in the root and `contracts/` directory for details.
